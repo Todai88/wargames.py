@@ -12,8 +12,7 @@ def pattern_lookup(line):
     :return: The line holding the matched string,
              or None if not found
     """
-    pattern = re.compile("^([A-Za-z0-9]{32})$")
-    print(line)
+    pattern = re.compile("^([A-Za-z0-9]{32})$", re.MULTILINE)
     if pattern.match(line):
         return line
     else:
@@ -64,7 +63,7 @@ def get_password(host, credentials, secret):
         response_lines = response.content.decode('utf-8').split(' ')
         return next((line
                      for line in response_lines
-                     if pattern_lookup(line.strip())),
+                     if pattern_lookup(line)),
                     None)
     except requests.RequestException as e:
         print(e)
@@ -74,7 +73,8 @@ def main():
     host = 'http://natas8.natas.labs.overthewire.org/index-source.html'
     credentials = ['natas8', 'DBfUBfqQG69KvJvJ1iAbMoIpwSNQ9bWe']
     secret = get_secret(host, credentials)
-    print(get_password(host.split('index')[0], credentials, secret))
+    password = get_password(host.split('index')[0], credentials, secret).split('<')[0]
+    print("natas9:" + password)
 
 if __name__ == '__main__':
     main()
